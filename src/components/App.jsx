@@ -1,43 +1,33 @@
-import { getContactsThunk } from 'redux/contactsThunk';
-import { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { Section } from "./Section/Section"
-import { SimpleForm } from "./Form/SimpleForm";
-import { ContactsList } from "./ContactsList/ContactsList";
-import { Filter } from "./Filter/Filter";
-import { Container, GeneralTitle } from "./App.styled";
-  
-  const App = () => {
-    const contacts = useSelector(state => state.contacts.items);
-    const dispatch = useDispatch();
-    const filtered = useSelector(state => state.filter);
-    const filterContact = e => {
-      const filteredContacts = contacts.filter(contact =>
-        contact.name.toLowerCase().includes(filtered.toLowerCase())
-      );
-      return filteredContacts;
-    };
+import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import Navigation from '../components/Navigation/Navigation'; 
+import RegisterPage from '../components/RegisterPage/RegisterPage'; 
+import LoginPage from '../components/LoginPage/LoginPage'; 
+import ContactsPage from '../components/ContactsPage/ContactsPage'; 
+import { getContactsThunk } from '../redux/contactsThunk';
+import { Container, GeneralTitle } from './App.styled';
 
-    useEffect(() => {
-      dispatch(getContactsThunk());
-    }, [dispatch]);
-  
-    return (
+const App = () => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getContactsThunk());
+  }, [dispatch]);
+
+  return (
+    <BrowserRouter>
+      <Navigation />
       <Container>
         <GeneralTitle>Phonebook</GeneralTitle>
-        <Section>
-          <SimpleForm contacts={contacts}/>
-        </Section>
-        <Section>
-          <Filter />
-        </Section>
-        <Section title="Contacts">
-          <ContactsList listContact={filterContact()} />
-        </Section>
+        <Routes>
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/contacts" element={<ContactsPage />} />
+        </Routes>
       </Container>
-    );
-  };
-  
-  export default App;
+    </BrowserRouter>
+  )
+}
 
-  
+export default App;
