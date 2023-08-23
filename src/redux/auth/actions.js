@@ -25,3 +25,6 @@ export const loginRequest = () => ({
     type: 'auth/registerError',
     payload: error,
   });
+  export const logout = () => ({
+    type: 'auth/logout',
+  });

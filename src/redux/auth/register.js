@@ -1,5 +1,6 @@
 import { registerRequest, registerSuccess, registerError } from './actions';
 import { contactAPI } from '../../api/api';
+import { setToken } from '../../api/api';
 
 export const registerUser = (name, email, password) => async dispatch => {
   try {
@@ -10,6 +11,7 @@ export const registerUser = (name, email, password) => async dispatch => {
       email,
       password,
     });
+    setToken(response.data.token)
 
     dispatch(registerSuccess(response.data));
   } catch (error) {

@@ -16,7 +16,7 @@ export const ContactsList = ({ listContact }) => {
         {listContact.map((cont) => (
           <p key={cont.id}>
            <span>
-          {cont.name}: {cont.phone}
+          {cont.name}: {cont.number}
         </span>
             <Button onClick={() => handleDeleteClick(cont.id)}>Delete</Button>
           </p>

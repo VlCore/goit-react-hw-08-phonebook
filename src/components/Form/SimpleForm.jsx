@@ -20,8 +20,8 @@ export const SimpleForm = ({contacts}) => {
   
       const notify = () => toast(`${name} is already in contacts`);
       const contact = {
-        name: name,
-        phone: number,
+        name,
+        number,
       };
   
       if (

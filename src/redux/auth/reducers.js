@@ -3,19 +3,22 @@ import { combineReducers } from 'redux';
 const userInitialState = { email: null, token: null };
 
 const userReducer = (state = userInitialState, action) => {
-  switch (action.type) {
-    case 'auth/loginSuccess':
-    case 'auth/registerSuccess':
-      return { ...state, ...action.payload };
-
-    case 'auth/loginError':
-    case 'auth/registerError':
-      return { ...state, error: action.payload };
-
-    default:
-      return state;
-  }
-};
+    switch (action.type) {
+      case 'auth/loginSuccess':
+      case 'auth/registerSuccess':
+        return { ...state, ...action.payload };
+  
+      case 'auth/logout':
+        return userInitialState; 
+  
+      case 'auth/loginError':
+      case 'auth/registerError':
+        return { ...state, error: action.payload };
+  
+      default:
+        return state;
+    }
+  };
 
 const loadingReducer = (state = false, action) => {
   switch (action.type) {
@@ -56,5 +59,6 @@ const authReducer = combineReducers({
   isLoading: loadingReducer,
   error: errorReducer,
 });
+
 
 export default authReducer;
