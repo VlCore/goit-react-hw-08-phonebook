@@ -6,15 +6,13 @@ export const contactAPI = axios.create({
   baseURL: 'https://connections-api.herokuapp.com',
 });
 
-let authToken = null;
+
 
 export const setToken = (token) => {
-  authToken = token;
   contactAPI.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 };
 
 export const clearToken = () => {
-  authToken = null;
   delete contactAPI.defaults.headers.common['Authorization'];
 };
 
