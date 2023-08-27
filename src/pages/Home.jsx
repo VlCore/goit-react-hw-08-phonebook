@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { stateIsLoggedIn } from '../redux/Auth/selectors';
+import { stateIsLoggedIn } from '../redux/Auths/selectors';
 import { LoginForm } from 'components/LoginForm/LoginForm';
 import { Title } from 'components/SharedStyledComponent/sharedStyledComponent';
 

@@ -9,8 +9,8 @@ import { Home } from 'pages/Home';
 import { PrivateRoute } from 'HOC/PrivateRoute';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
-import { refresh } from 'redux/Auth/operations';
-import { selectIsLRefreshing } from 'redux/Auth/selectors';
+import { refresh } from 'redux/Auths/operations';
+import { selectIsLRefreshing } from 'redux/Auths/selectors';
 import PublicRoute from 'HOC/PublicRoute';
 
 export function App() {

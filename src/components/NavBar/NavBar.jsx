@@ -2,7 +2,7 @@ import React from 'react';
 import { NavItem, Nav } from './navBarStyle';
 import { UserMenu } from 'components/UserMenu/UserMenu';
 import { useSelector } from 'react-redux';
-import { stateIsLoggedIn } from '../../redux/Auth/selectors';
+import { stateIsLoggedIn } from '../../redux/Auths/selectors';
 import { StyledLink } from '../SharedStyledComponent/sharedStyledComponent';
 
 export const NavBar = () => {

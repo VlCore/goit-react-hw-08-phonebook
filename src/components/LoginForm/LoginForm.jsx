@@ -2,7 +2,7 @@ import React from 'react';
 import { Formik } from 'formik';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { login } from 'redux/Auth/operations';
+import { login } from 'redux/Auths/operations';
 import {
   FormContainer,
   Title,

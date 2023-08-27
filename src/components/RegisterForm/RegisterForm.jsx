@@ -9,7 +9,7 @@ import {
 } from '../SharedStyledComponent/sharedStyledComponent';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { register } from 'redux/Auth/operations';
+import { register } from 'redux/Auths/operations';
 
 export const RegisterForm = () => {
   const dispatch = useDispatch();

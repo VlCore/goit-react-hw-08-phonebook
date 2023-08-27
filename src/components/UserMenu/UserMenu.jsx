@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getUser } from 'redux/Auth/selectors';
-import { logout } from 'redux/Auth/operations';
+import { getUser } from 'redux/Auths/selectors';
+import { logout } from 'redux/Auths/operations';
 import {
   StyledLink,
   Info,
