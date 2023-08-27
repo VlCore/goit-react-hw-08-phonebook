@@ -1,22 +1,30 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { logoutUser } from '../../redux/authSlice';
-import { UserMenuContainer } from './UserMenu.styled';
+import { getUser } from 'redux/Auth/selectors';
+import { logout } from 'redux/Auth/operations';
+import {
+  StyledLink,
+  Info,
+} from '../SharedStyledComponent/sharedStyledComponent';
+import { styled } from 'styled-components';
+const StyledLinkLogout = styled(StyledLink)`
+&.active {
+    background-color: red;
+    color: white;
+  }
+  &:hover:not(.active) {
+    background-color: red;
+  }
+`
 
-const UserMenu = () => {
+export const UserMenu = () => {
+  const { name } = useSelector(getUser);
   const dispatch = useDispatch();
-  const userEmail = useSelector(state => state.auth.user.email);
-
-  const handleLogout = () => {
-    dispatch(logoutUser());
-  };
 
   return (
-    <UserMenuContainer>
-      <p>{userEmail}</p>
-      <button onClick={handleLogout}>Logout</button>
-    </UserMenuContainer>
+    <>
+      <Info>{name}</Info>
+      <StyledLinkLogout onClick={() => dispatch(logout())}> Logout</StyledLinkLogout>
+    </>
   );
 };
-
-export default UserMenu;

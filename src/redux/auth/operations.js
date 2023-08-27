@@ -1,132 +1,67 @@
-import { combineReducers } from 'redux';
-import { contactAPI } from '../../api/api'
-import { setToken } from '../../api/api';
-export const loginRequest = () => ({
-    type: 'auth/loginRequest',
-  });
-  
-  export const loginSuccess = user => ({
-    type: 'auth/loginSuccess',
-    payload: user,
-  });
-  
-  export const loginError = error => ({
-    type: 'auth/loginError',
-    payload: error,
-  });
-  
-  export const registerRequest = () => ({
-    type: 'auth/registerRequest',
-  });
-  
-  export const registerSuccess = user => ({
-    type: 'auth/registerSuccess',
-    payload: user,
-  });
-  
-  export const registerError = error => ({
-    type: 'auth/registerError',
-    payload: error,
-  });
-  export const logout = () => ({
-    type: 'auth/logout',
-  });
+import { createAsyncThunk } from '@reduxjs/toolkit';
+import axios from 'axios';
 
-
-export const loginUser = ( email, password) => async dispatch => {
-  try {
-    dispatch(loginRequest());
-
-    const response = await contactAPI.post('/users/login', {
-      email,
-      password,
-    });
-    setToken(response.data.token)
-
-    dispatch(loginSuccess(response.data));
-  } catch (error) {
-    dispatch(loginError('Invalid email or password'));
-  }
-};
-
-
-const userInitialState = { email: null, token: null };
-
-const userReducer = (state = userInitialState, action) => {
-    switch (action.type) {
-      case 'auth/loginSuccess':
-      case 'auth/registerSuccess':
-        return { ...state, ...action.payload };
-  
-      case 'auth/logout':
-        return userInitialState; 
-  
-      case 'auth/loginError':
-      case 'auth/registerError':
-        return { ...state, error: action.payload };
-  
-      default:
-        return state;
-    }
-  };
-
-const loadingReducer = (state = false, action) => {
-  switch (action.type) {
-    case 'auth/loginRequest':
-    case 'auth/registerRequest':
-      return true;
-
-    case 'auth/loginSuccess':
-    case 'auth/loginError':
-    case 'auth/registerSuccess':
-    case 'auth/registerError':
-      return false;
-
-    default:
-      return state;
-  }
-};
-
-const errorReducer = (state = null, action) => {
-  switch (action.type) {
-    case 'auth/loginError':
-    case 'auth/registerError':
-      return action.payload;
-
-    case 'auth/loginRequest':
-    case 'auth/registerRequest':
-    case 'auth/loginSuccess':
-    case 'auth/registerSuccess':
-      return null;
-
-    default:
-      return state;
-  }
-};
-
-const authReducer = combineReducers({
-  user: userReducer,
-  isLoading: loadingReducer,
-  error: errorReducer,
+export const API = axios.create({
+  baseURL: 'https://connections-api.herokuapp.com',
 });
 
-
-export default authReducer;
-
-
-export const registerUser = (name, email, password) => async dispatch => {
-  try {
-    dispatch(registerRequest());
-
-    const response = await contactAPI.post('/users/signup', {
-      name,
-      email,
-      password,
-    });
-    setToken(response.data.token)
-
-    dispatch(registerSuccess(response.data));
-  } catch (error) {
-    dispatch(registerError('Registration failed'));
-  }
+const setToken = token => {
+  API.defaults.headers.common.Authorization = `Bearer ${token}`;
 };
+const clearToken = () => {
+  API.defaults.headers.common.Authorization = ``;
+};
+
+export const register = createAsyncThunk(
+  'auth/reg',
+  async (credentials, thunkAPI) => {
+    try {
+      const res = await API.post('/users/signup', credentials);
+      setToken(res.data.token);
+      console.log(res.data);
+      return res.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
+
+export const login = createAsyncThunk(
+  'auth/login',
+  async (credentials, thunkAPI) => {
+    try {
+      const res = await API.post('/users/login', credentials);
+      setToken(res.data.token);
+      console.log(res.data);
+      return res.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
+export const logout = createAsyncThunk('auth/logout', async (_, thunkAPI) => {
+  try {
+    const res = await API.post('/users/logout');
+    clearToken();
+    console.log(res.data);
+    return res.data;
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error.message);
+  }
+});
+//pul token from localstorege
+export const refresh = createAsyncThunk('auth/refresh', async (_, thunkAPI) => {
+  const savedToken = thunkAPI.getState().user.token;
+  if (!savedToken) {
+    return thunkAPI.rejectWithValue('Token is not exist');
+  }
+  try {
+    setToken(savedToken);
+    console.log(savedToken);
+    const res = await API.get('/users/current');
+    console.log(res.data);
+    return res.data;
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error.message);
+  }
+});

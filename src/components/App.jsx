@@ -1,33 +1,60 @@
-import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Navigation from '../components/Navigation/Navigation'; 
-import RegisterPage from '../components/RegisterPage/RegisterPage'; 
-import LoginPage from '../components/LoginPage/LoginPage'; 
-import ContactsPage from '../components/ContactsPage/ContactsPage'; 
-import { getContactsThunk } from '../redux/contactsThunk';
-import { Container, GeneralTitle } from './App.styled';
+import Contacts from 'pages/Contacts';
+import Login from 'pages/Login';
+import Register from 'pages/Register';
+import React from 'react';
+import { Navigate, Route, Routes } from 'react-router-dom';
 
-const App = () => {
+import { Layout } from './Layout/Layout';
+import { Home } from 'pages/Home';
+import { PrivateRoute } from 'HOC/PrivateRoute';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { refresh } from 'redux/Auth/operations';
+import { selectIsLRefreshing } from 'redux/Auth/selectors';
+import PublicRoute from 'HOC/PublicRoute';
+
+export function App() {
   const dispatch = useDispatch();
-
   useEffect(() => {
-    dispatch(getContactsThunk());
+    dispatch(refresh());
   }, [dispatch]);
 
-  return (
-    <BrowserRouter>
-      <Navigation />
-      <Container>
-        <GeneralTitle>Phonebook</GeneralTitle>
-        <Routes>
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/contacts" element={<ContactsPage />} />
-        </Routes>
-      </Container>
-    </BrowserRouter>
-  )
-}
+  const refreshing = useSelector(selectIsLRefreshing);
 
-export default App;
+  return refreshing ? (
+    <h1>Loaging...</h1>
+  ) : (
+    <>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Home />} />
+          <Route
+            path="register"
+            element={
+              <PublicRoute>
+                <Register />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="login"
+            element={
+              <PublicRoute>
+                <Login />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="contacts"
+            element={
+              <PrivateRoute>
+                <Contacts />
+              </PrivateRoute>
+            }
+          />
+          <Route path="*" element={<Navigate to="/" />} />
+        </Route>
+      </Routes>
+    </>
+  );
+}
